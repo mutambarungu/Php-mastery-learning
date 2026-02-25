@@ -4,12 +4,14 @@ $errors = [];
 $name = '';
 $email = '';
 $age = '';
+$password = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $name = trim($_POST['name'] ?? '');
     $email = trim($_POST['email'] ?? '');
     $age = trim($_POST['age'] ?? '');
+    $password = trim($_POST['password'] ?? '');
 
     // Validation
 
@@ -23,6 +25,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if (!is_numeric($age) || $age < 18) {
         $errors['age'] = "Age must be 18+.";
+    }
+    if ($password === '' || strlen($password) < 8) {
+        $errors['password'] = "Password must be at least 8 characters.";
+    } elseif (!preg_match('/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[\W]).{8,}$/', $password)) {
+        $errors['password'] = "Password must be at least 8 characters, include a number and a special character.";
     }
 
     if (empty($errors)) {
@@ -43,6 +50,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     <input type="text" name="age" placeholder="Age" value="<?= htmlspecialchars($age) ?>">
     <small style="color:red"><?= $errors['age'] ?? '' ?></small>
+    <br><br>
+
+    <input type="password" name="password" placeholder="Password" value="<?= htmlspecialchars($password) ?>">
+    <small style="color:red"><?= $errors['password'] ?? '' ?></small>
     <br><br>
 
     <button type="submit">Submit</button>
